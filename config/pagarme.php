@@ -190,4 +190,20 @@ return [
     |
     */
     'bin_cache_ttl' => env('PAGARME_BIN_CACHE_TTL', 3600),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Fee Calculator Cache
+    |--------------------------------------------------------------------------
+    |
+    | Cache para o endpoint /transactions/fee-calculator.
+    | TTL pode ser "month" (padrão) ou segundos.
+    |
+    */
+    'fee_calculator' => [
+        'endpoint' => env('PAGARME_FEE_CALCULATOR_ENDPOINT', 'transactions/fee-calculator'),
+        // Aceita "month" (padrão) ou segundos (ex: 2592000 para ~30 dias)
+        'cache_ttl' => env('PAGARME_FEE_CALCULATOR_CACHE_TTL', 'month'),
+        'cache_prefix' => env('PAGARME_FEE_CALCULATOR_CACHE_PREFIX', 'pagarme:fee_calculator'),
+    ],
 ];

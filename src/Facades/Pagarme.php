@@ -10,6 +10,7 @@ use Kaninstein\LaravelPagarme\Services\WebhookService;
 use Kaninstein\LaravelPagarme\Services\CardService;
 use Kaninstein\LaravelPagarme\Services\TokenService;
 use Kaninstein\LaravelPagarme\Services\BinService;
+use Kaninstein\LaravelPagarme\Services\FeeCalculatorService;
 
 /**
  * @method static CustomerService customers()
@@ -19,6 +20,7 @@ use Kaninstein\LaravelPagarme\Services\BinService;
  * @method static CardService cards()
  * @method static TokenService tokens()
  * @method static BinService bin()
+ * @method static FeeCalculatorService feeCalculator()
  * @method static array get(string $endpoint, array $query = [])
  * @method static array post(string $endpoint, array $data = [])
  * @method static array put(string $endpoint, array $data = [])
@@ -88,5 +90,13 @@ class Pagarme extends Facade
     public static function bin(): BinService
     {
         return app(BinService::class);
+    }
+
+    /**
+     * Get FeeCalculatorService instance
+     */
+    public static function feeCalculator(): FeeCalculatorService
+    {
+        return app(FeeCalculatorService::class);
     }
 }

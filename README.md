@@ -210,6 +210,27 @@ $charge = Pagarme::charges()->capture('ch_123456', [
 $charge = Pagarme::charges()->cancel('ch_123456');
 ```
 
+### Calculadora de Taxas (Fee Calculator)
+
+Simule taxas e valores (líquido/sugerido) via endpoint `transactions/fee-calculator`, com cache por ~1 mês por padrão.
+
+```php
+use Kaninstein\LaravelPagarme\Facades\Pagarme;
+
+$result = Pagarme::feeCalculator()->calculate([
+    'amount' => 7800, // centavos
+    'fee_responsibility' => 'merchant', // ou 'buyer'
+    'credit_card' => [
+        'installments' => 1,
+        'card_brand' => 'mastercard',
+        'capture_method' => 'ecommerce', // opcional (default: ecommerce)
+    ],
+]);
+
+// Desativar cache (por chamada)
+$result = Pagarme::feeCalculator()->calculate($payload, useCache: false);
+```
+
 ### Webhooks
 
 #### Configuração Automática (Recomendado)

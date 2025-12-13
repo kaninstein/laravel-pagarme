@@ -11,6 +11,7 @@ use Kaninstein\LaravelPagarme\Services\WebhookService;
 use Kaninstein\LaravelPagarme\Services\CardService;
 use Kaninstein\LaravelPagarme\Services\TokenService;
 use Kaninstein\LaravelPagarme\Services\BinService;
+use Kaninstein\LaravelPagarme\Services\FeeCalculatorService;
 
 class PagarmeServiceProvider extends ServiceProvider
 {
@@ -59,6 +60,10 @@ class PagarmeServiceProvider extends ServiceProvider
 
         $this->app->singleton(BinService::class, function ($app) {
             return new BinService();
+        });
+
+        $this->app->singleton(FeeCalculatorService::class, function ($app) {
+            return new FeeCalculatorService($app->make(PagarmeClient::class));
         });
 
         // Alias for easy access
