@@ -212,6 +212,34 @@ $charge = Pagarme::charges()->cancel('ch_123456');
 
 ### Webhooks
 
+#### Configuração Automática (Recomendado)
+
+Use o comando Artisan para configurar webhooks automaticamente:
+
+```bash
+# Configurar webhooks recomendados
+php artisan pagarme:setup-webhooks
+
+# Especificar URL customizada
+php artisan pagarme:setup-webhooks --url=https://seusite.com/api/webhooks/pagarme
+
+# Configurar eventos específicos
+php artisan pagarme:setup-webhooks --events=order.paid,charge.paid
+
+# Listar webhooks existentes
+php artisan pagarme:setup-webhooks --list
+
+# Limpar e recriar todos os webhooks
+php artisan pagarme:setup-webhooks --clean
+```
+
+Configure a URL no `.env`:
+```env
+PAGARME_WEBHOOK_URL=https://seusite.com/api/webhooks/pagarme
+```
+
+#### Configuração Manual
+
 ```php
 use Kaninstein\LaravelPagarme\Facades\Pagarme;
 
@@ -236,6 +264,101 @@ $webhook = Pagarme::webhooks()->update('hook_123', [
 // Deletar webhook
 Pagarme::webhooks()->delete('hook_123');
 ```
+
+#### Segurança e Validação de Webhooks
+
+**IMPORTANTE**: Pagar.me NÃO suporta validação HMAC nativamente. O pacote oferece múltiplas camadas de segurança:
+
+##### 1. Validação por IP Whitelist (Recomendado)
+
+Configure os IPs permitidos no `.env`:
+
+```env
+# Lista de IPs separados por vírgula (suporta CIDR)
+PAGARME_WEBHOOK_ALLOWED_IPS=203.0.113.0/24,198.51.100.10
+```
+
+##### 2. Middleware de Validação
+
+Adicione o middleware nas suas rotas:
+
+```php
+use Kaninstein\LaravelPagarme\Middleware\ValidateWebhookSignature;
+
+Route::post('/api/webhooks/pagarme', [WebhookController::class, 'handle'])
+    ->middleware(ValidateWebhookSignature::class);
+```
+
+##### 3. Validação Manual
+
+```php
+use Kaninstein\LaravelPagarme\Services\WebhookValidator;
+use Illuminate\Http\Request;
+
+class WebhookController extends Controller
+{
+    public function handle(Request $request)
+    {
+        $validator = WebhookValidator::fromConfig();
+
+        // Validação completa (IP + estrutura)
+        $result = $validator->validateWebhook($request);
+
+        if (!$result['valid']) {
+            Log::warning('Webhook inválido', $result['reasons']);
+            return response()->json(['error' => 'Invalid webhook'], 401);
+        }
+
+        // Processar webhook
+        $payload = $request->json()->all();
+
+        match ($payload['type']) {
+            'order.paid' => $this->handleOrderPaid($payload['data']),
+            'charge.paid' => $this->handleChargePaid($payload['data']),
+            'charge.refunded' => $this->handleChargeRefunded($payload['data']),
+            default => Log::info('Evento não tratado: ' . $payload['type']),
+        };
+
+        return response()->json(['status' => 'processed']);
+    }
+}
+```
+
+##### 4. Validação por Estrutura do Payload
+
+```php
+$validator = WebhookValidator::fromConfig();
+
+$payload = $request->json()->all();
+
+if (!$validator->validatePayloadStructure($payload)) {
+    // Payload não tem estrutura válida do Pagar.me
+    return response()->json(['error' => 'Invalid payload'], 400);
+}
+```
+
+#### Eventos Disponíveis
+
+**Pedidos:**
+- `order.paid` - Pedido pago
+- `order.payment_failed` - Falha no pagamento
+- `order.canceled` - Pedido cancelado
+- `order.closed` - Pedido fechado
+
+**Cobranças:**
+- `charge.paid` - Cobrança paga
+- `charge.payment_failed` - Falha no pagamento
+- `charge.refunded` - Estorno realizado
+- `charge.chargedback` - Chargeback recebido
+- `charge.underpaid` - Pago a menor
+- `charge.overpaid` - Pago a maior
+
+**Antifraude:**
+- `charge.antifraud_approved` - Aprovado
+- `charge.antifraud_reproved` - Reprovado
+- `charge.antifraud_manual` - Análise manual
+
+Consulte a [documentação oficial](https://docs.pagar.me/reference/eventos-de-webhook-1) para lista completa.
 
 ### Facilitadores de Pagamento (SubMerchant)
 
@@ -622,7 +745,8 @@ The MIT License (MIT). Consulte [License File](LICENSE.md) para mais informaçõ
 - ✅ Testes automatizados completos
 - ✅ Suporte a SubMerchant
 - ✅ Tokenização de cartões
-- [ ] Validação de assinatura de webhooks
+- ✅ Validação e segurança de webhooks (IP whitelist + estrutura)
+- ✅ Comando Artisan para configuração automática de webhooks
 - [ ] Suporte a assinaturas/recorrência
 - [ ] Suporte a split de pagamentos
 - [ ] Suporte a Google Pay

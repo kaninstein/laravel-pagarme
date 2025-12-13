@@ -74,5 +74,12 @@ class PagarmeServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/pagarme.php' => config_path('pagarme.php'),
         ], 'pagarme-config');
+
+        // Register commands
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Console\SetupWebhooksCommand::class,
+            ]);
+        }
     }
 }

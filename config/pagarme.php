@@ -52,11 +52,58 @@ return [
     | Webhook Configuration
     |--------------------------------------------------------------------------
     |
-    | Configurações para processamento de webhooks da Pagarme.
+    | Configurações de segurança e validação de webhooks da Pagar.me.
+    |
+    | IMPORTANTE: Pagar.me não suporta validação HMAC nativamente.
+    | Use validação por IP whitelist como método principal de segurança.
     |
     */
     'webhook' => [
-        'tolerance' => env('PAGARME_WEBHOOK_TOLERANCE', 300), // seconds
+        // URL para receber webhooks (usado pelo comando setup-webhooks)
+        'url' => env('PAGARME_WEBHOOK_URL'),
+
+        // Habilitar validação de webhooks (recomendado em produção)
+        'enabled' => env('PAGARME_WEBHOOK_VALIDATION_ENABLED', true),
+
+        // Validar webhooks em ambiente local
+        'validate_in_local' => env('PAGARME_WEBHOOK_VALIDATE_IN_LOCAL', false),
+
+        // Tolerância de tempo para webhooks (em segundos)
+        'tolerance' => env('PAGARME_WEBHOOK_TOLERANCE', 300),
+
+        /*
+        |--------------------------------------------------------------------------
+        | IP Whitelist (Recomendado)
+        |--------------------------------------------------------------------------
+        |
+        | Lista de IPs permitidos para receber webhooks do Pagar.me.
+        | Suporta notação CIDR para ranges (ex: 192.168.1.0/24)
+        |
+        | Deixe vazio [] para aceitar qualquer IP (não recomendado em produção)
+        | Contate o suporte Pagar.me para obter os IPs oficiais atualizados.
+        |
+        */
+        'validate_ip' => env('PAGARME_WEBHOOK_VALIDATE_IP', true),
+        'allowed_ips' => array_filter(explode(',', env('PAGARME_WEBHOOK_ALLOWED_IPS', ''))),
+
+        /*
+        |--------------------------------------------------------------------------
+        | HMAC Signature Validation (Opcional)
+        |--------------------------------------------------------------------------
+        |
+        | ATENÇÃO: Pagar.me NÃO suporta HMAC signature nativamente!
+        | Use apenas se você implementou um sistema customizado de assinatura.
+        |
+        | Se habilitado, você precisa configurar:
+        | - secret: Chave secreta para HMAC (pode usar a secret_key da API)
+        | - algorithm: sha256, sha1 ou sha512 (padrão: sha256)
+        | - header: Nome do header HTTP contendo a assinatura
+        |
+        */
+        'validate_signature' => env('PAGARME_WEBHOOK_VALIDATE_SIGNATURE', false),
+        'secret' => env('PAGARME_WEBHOOK_SECRET', null), // Deixe null para usar secret_key
+        'signature_algorithm' => env('PAGARME_WEBHOOK_SIGNATURE_ALGORITHM', 'sha256'),
+        'signature_header' => env('PAGARME_WEBHOOK_SIGNATURE_HEADER', 'X-Hub-Signature-256'),
     ],
 
     /*
