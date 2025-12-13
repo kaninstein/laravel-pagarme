@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagar.me - Tokenização de Cartão (Frontend)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .card-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .brand-display {
+            padding: 8px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+        .success {
+            color: green;
+            margin-top: 10px;
+        }
+        .info-box {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tokenização de Cartão - Frontend</h1>
+
+    <div class="info-box">
+        <strong>ℹ️ Importante:</strong>
+        <ul>
+            <li>Nunca envie SECRET_KEY para o frontend</li>
+            <li>Use apenas sua PUBLIC_KEY (pk_test_* ou pk_*)</li>
+            <li>Domínio deve estar cadastrado no dashboard Pagar.me</li>
+            <li>Dados do cartão não passam pelo seu servidor (PCI DSS)</li>
+        </ul>
+    </div>
+
+    <!-- Formulário com tokenização automática -->
+    <form id="payment-form" action="/process-payment" method="POST" data-pagarmecheckout-form>
+
+        <div class="form-group">
+            <label for="holder-name">Nome no Cartão</label>
+            <input
+                type="text"
+                id="holder-name"
+                name="holder-name"
+                data-pagarmecheckout-element="holder_name"
+                placeholder="JOÃO SILVA"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="card-number">Número do Cartão</label>
+            <input
+                type="text"
+                id="card-number"
+                name="card-number"
+                data-pagarmecheckout-element="number"
+                placeholder="4111 1111 1111 1111"
+                maxlength="19"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Bandeira (Detectada Automaticamente)</label>
+            <div class="brand-display">
+                <span data-pagarmecheckout-element="brand">-</span>
+            </div>
+        </div>
+
+        <div class="card-info">
+            <div class="form-group">
+                <label for="exp-month">Mês</label>
+                <input
+                    type="text"
+                    id="exp-month"
+                    name="exp-month"
+                    data-pagarmecheckout-element="exp_month"
+                    placeholder="12"
+                    maxlength="2"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="exp-year">Ano</label>
+                <input
+                    type="text"
+                    id="exp-year"
+                    name="exp-year"
+                    data-pagarmecheckout-element="exp_year"
+                    placeholder="2030"
+                    maxlength="4"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="cvv">CVV</label>
+                <input
+                    type="text"
+                    id="cvv"
+                    name="cvv"
+                    data-pagarmecheckout-element="cvv"
+                    placeholder="123"
+                    maxlength="4"
+                    required
+                >
+            </div>
+        </div>
+
+        <!-- Campos adicionais (não tokenizados, vão para seu servidor) -->
+        <div class="form-group">
+            <label for="customer-name">Nome do Comprador</label>
+            <input
+                type="text"
+                id="customer-name"
+                name="customer_name"
+                placeholder="João Silva"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="customer-email">E-mail</label>
+            <input
+                type="email"
+                id="customer-email"
+                name="customer_email"
+                placeholder="joao@example.com"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="amount">Valor (R$)</label>
+            <input
+                type="text"
+                id="amount"
+                name="amount"
+                placeholder="100.00"
+                required
+            >
+        </div>
+
+        <button type="submit">Processar Pagamento</button>
+    </form>
+
+    <div id="message"></div>
+
+    <!-- Script Pagar.me Tokenização -->
+    <script
+        src="https://checkout.pagar.me/v1/tokenizecard.js"
+        data-pagarmecheckout-app-id="pk_test_SUBSTITUA_PELA_SUA_PUBLIC_KEY">
+    </script>
+
+    <script>
+        // Função de sucesso - chamada quando token é gerado
+        function success(data) {
+            console.log('Token gerado com sucesso!');
+            console.log('Data:', data);
+
+            // data contém:
+            // - pagarmetoken: Token do cartão
+            // - customer_name: Nome do comprador
+            // - customer_email: Email
+            // - amount: Valor
+            // ... outros campos não mapeados
+
+            const message = document.getElementById('message');
+            message.className = 'success';
+            message.innerHTML = `
+                <strong>✓ Token gerado com sucesso!</strong><br>
+                Token: ${data.pagarmetoken}<br>
+                <small>O formulário será enviado para seu servidor com o token.</small>
+            `;
+
+            // Retornar true para continuar com submit
+            // Retornar false para abortar
+            return true;
+        }
+
+        // Função de erro - chamada se houver problema
+        function fail(error) {
+            console.error('Erro ao gerar token:', error);
+
+            const message = document.getElementById('message');
+            message.className = 'error';
+            message.innerHTML = `
+                <strong>✗ Erro ao processar cartão</strong><br>
+                ${error.message || 'Verifique os dados do cartão e tente novamente.'}
+            `;
+
+            // Não permite envio do formulário
+            return false;
+        }
+
+        // Inicializar tokenização
+        // IMPORTANTE: Deve ser chamado quando a página carregar
+        PagarmeCheckout.init(success, fail);
+
+        // Formatação automática do número do cartão
+        document.getElementById('card-number').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+
+        // Formatação do mês
+        document.getElementById('exp-month').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (parseInt(value) > 12) value = '12';
+            e.target.value = value;
+        });
+
+        // Apenas números no CVV
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+    </script>
+</body>
+</html>

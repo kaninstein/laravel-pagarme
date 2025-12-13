@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         executionOrder="random"
+         failOnWarning="true"
+         failOnRisky="true"
+         failOnEmptyTestSuite="true"
+         beStrictAboutOutputDuringTests="true"
+>
+    <testsuites>
+        <testsuite name="LaravelPagarme Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+    <coverage>
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+    </coverage>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="PAGARME_SECRET_KEY" value="sk_test_f81599b60c834a6f8f8e3998d818036f"/>
+        <env name="PAGARME_PUBLIC_KEY" value="pk_test_kVwQPeWHmWUx5Lle"/>
+        <env name="PAGARME_API_URL" value="https://api.pagar.me/core/v5"/>
+        <env name="PAGARME_TIMEOUT" value="30"/>
+    </php>
+</phpunit>

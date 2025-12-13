@@ -1,0 +1,73 @@
+{
+    "name": "kaninstein/laravel-pagarme",
+    "description": "Complete integration with Pagar.me payment gateway (API v5) for Laravel. Supports all payment methods: Credit/Debit Card, PIX, Boleto, Voucher. Includes ABECS codes mapping and complete test simulators.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "pagarme",
+        "pagar.me",
+        "payment",
+        "gateway",
+        "pix",
+        "boleto",
+        "credit-card",
+        "debit-card",
+        "voucher",
+        "brazil",
+        "payment-gateway",
+        "abecs"
+    ],
+    "homepage": "https://github.com/kaninstein/laravel-pagarme",
+    "authors": [
+        {
+            "name": "João Pedro Coelho",
+            "email": "falecom@joaopedrocoelho.com.br",
+            "homepage": "https://joaopedrocoelho.com.br",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2|^8.3|^8.4",
+        "illuminate/support": "^10.0|^11.0|^12.0",
+        "illuminate/http": "^10.0|^11.0|^12.0",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0|^9.0|^10.0",
+        "phpunit/phpunit": "^10.0|^11.0",
+        "mockery/mockery": "^1.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kaninstein\\LaravelPagarme\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kaninstein\\LaravelPagarme\\Tests\\": "tests/",
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Kaninstein\\LaravelPagarme\\PagarmeServiceProvider"
+            ],
+            "aliases": {
+                "Pagarme": "Kaninstein\\LaravelPagarme\\Facades\\Pagarme"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist",
+        "optimize-autoloader": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
