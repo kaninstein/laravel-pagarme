@@ -1,13 +1,17 @@
 # Laravel Pagarme
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/kaninstein/laravel-pagarme.svg?style=flat-square)](https://packagist.org/packages/kaninstein/laravel-pagarme)
-[![Total Downloads](https://img.shields.io/packagist/dt/kaninstein/laravel-pagarme.svg?style=flat-square)](https://packagist.org/packages/kaninstein/laravel-pagarme)
-[![License](https://img.shields.io/packagist/l/kaninstein/laravel-pagarme.svg?style=flat-square)](https://packagist.org/packages/kaninstein/laravel-pagarme)
-[![PHP Version](https://img.shields.io/packagist/php-v/kaninstein/laravel-pagarme.svg?style=flat-square)](https://packagist.org/packages/kaninstein/laravel-pagarme)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/kaninstein/laravel-pagarme?style=flat-square)
+![GitHub](https://img.shields.io/github/license/kaninstein/laravel-pagarme?style=flat-square)
+![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-blue?style=flat-square)
+![Laravel](https://img.shields.io/badge/Laravel-10%20%7C%2011%20%7C%2012-red?style=flat-square)
 
 **Integração completa e não-oficial com o gateway de pagamento Pagar.me (API v5) para Laravel 10, 11 e 12.**
 
 > 🚀 **Pronto para produção** • Testes automatizados • Código 100% em português • Sem dependências do SDK oficial
+
+---
+
+**📦 Packagist:** [kaninstein/laravel-pagarme](https://packagist.org/packages/kaninstein/laravel-pagarme) *(em breve)*
 
 ## Características
 
