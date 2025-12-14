@@ -71,7 +71,7 @@ class DebitCardSimulatorTest extends TestCase
         $customer = CustomerDTO::individual(
             name: 'Cliente Débito Teste',
             email: 'debito.' . time() . rand(100, 999) . '@example.com',
-            cpf: '12345678900',
+            cpf: '11144477735',
             phone: PhonesDTO::brazilian(
                 mobilePhone: PhoneDTO::brazilian('11', '987654321')
             ),

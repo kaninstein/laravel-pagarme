@@ -62,7 +62,7 @@ class OrderServiceTest extends TestCase
         $customer = CustomerDTO::individual(
             name: 'Cliente Teste Pedido',
             email: 'pedido.' . time() . '@example.com',
-            cpf: '12345678900',
+            cpf: '11144477735',
             phone: PhonesDTO::brazilian(
                 mobilePhone: PhoneDTO::brazilian('11', '987654321')
             ),
@@ -129,7 +129,7 @@ class OrderServiceTest extends TestCase
         $customer = CustomerDTO::individual(
             name: 'Cliente PIX Teste',
             email: 'pix.' . time() . '@example.com',
-            cpf: '12345678900',
+            cpf: '11144477735',
             phone: PhonesDTO::brazilian(
                 mobilePhone: PhoneDTO::brazilian('11', '987654321')
             ),
@@ -185,7 +185,7 @@ class OrderServiceTest extends TestCase
         $customer = CustomerDTO::individual(
             name: 'Cliente Boleto Teste',
             email: 'boleto.' . time() . '@example.com',
-            cpf: '12345678900',
+            cpf: '11144477735',
             phone: PhonesDTO::brazilian(
                 mobilePhone: PhoneDTO::brazilian('11', '987654321')
             ),
@@ -292,7 +292,7 @@ class OrderServiceTest extends TestCase
         $customer = CustomerDTO::individual(
             name: 'Cliente Multi-Payment',
             email: 'multi.' . time() . '@example.com',
-            cpf: '12345678900',
+            cpf: '11144477735',
             phone: PhonesDTO::brazilian(
                 mobilePhone: PhoneDTO::brazilian('11', '987654321')
             )

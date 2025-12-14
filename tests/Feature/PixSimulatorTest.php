@@ -54,7 +54,7 @@ class PixSimulatorTest extends TestCase
         $customer = CustomerDTO::individual(
             name: 'Cliente PIX Teste',
             email: 'pix.' . time() . rand(100, 999) . '@example.com',
-            cpf: '12345678900',
+            cpf: '11144477735',
             phone: PhonesDTO::brazilian(
                 mobilePhone: PhoneDTO::brazilian('11', '987654321')
             ),
@@ -175,7 +175,7 @@ class PixSimulatorTest extends TestCase
         $customer = CustomerDTO::individual(
             name: 'Cliente PIX Expiracao',
             email: 'pixexp.' . time() . '@example.com',
-            cpf: '12345678900',
+            cpf: '11144477735',
             phone: PhonesDTO::brazilian(
                 mobilePhone: PhoneDTO::brazilian('11', '987654321')
             )
@@ -214,7 +214,7 @@ class PixSimulatorTest extends TestCase
         $customer = CustomerDTO::individual(
             name: 'Cliente PIX Completo',
             email: 'pixcompleto.' . time() . '@example.com',
-            cpf: '12345678900',
+            cpf: '11144477735',
             phone: PhonesDTO::brazilian(
                 mobilePhone: PhoneDTO::brazilian('11', '987654321'),
                 homePhone: PhoneDTO::brazilian('11', '12345678')

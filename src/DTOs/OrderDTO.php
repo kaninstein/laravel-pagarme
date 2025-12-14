@@ -27,6 +27,43 @@ class OrderDTO
 
     public function toArray(): array
     {
+        $customerAddress = null;
+        if ($this->customer instanceof CustomerDTO) {
+            $address = $this->customer->address;
+            if ($address instanceof AddressDTO) {
+                $customerAddress = $address->toArray();
+            } elseif (is_array($address)) {
+                $customerAddress = $address;
+            }
+        }
+
+        $payments = array_map(
+            fn (PaymentDTO $payment) => $payment->toArray(),
+            $this->payments
+        );
+
+        // When using tokenized cards, Pagar.me requires a billing address.
+        // Use customer.address as a safe default when available.
+        if ($customerAddress !== null) {
+            foreach ($payments as &$payment) {
+                if (($payment['payment_method'] ?? null) !== 'credit_card') {
+                    continue;
+                }
+
+                $card = $payment['credit_card']['card'] ?? null;
+                if (!is_array($card) || empty($card['token'])) {
+                    continue;
+                }
+
+                if (isset($card['billing_address']) || isset($card['billing_address_id'])) {
+                    continue;
+                }
+
+                $payment['credit_card']['card']['billing_address'] = $customerAddress;
+            }
+            unset($payment);
+        }
+
         $data = array_filter([
             'items' => array_map(
                 fn (OrderItemDTO $item) => $item->toArray(),
@@ -35,10 +72,7 @@ class OrderDTO
             'customer' => is_string($this->customer)
                 ? ['id' => $this->customer]
                 : $this->customer->toArray(),
-            'payments' => array_map(
-                fn (PaymentDTO $payment) => $payment->toArray(),
-                $this->payments
-            ),
+            'payments' => $payments,
             'code' => $this->code,
             'closed' => $this->closed,
             'antifraud_enabled' => $this->antifraudEnabled,

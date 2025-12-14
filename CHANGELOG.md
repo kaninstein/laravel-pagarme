@@ -2,6 +2,13 @@
 
 All notable changes to `laravel-pagarme` will be documented in this file.
 
+## 1.1.0 - 2025-12-14
+
+### Fixes
+- Auto-generate `items[].code` when omitted to satisfy Pagar.me order validation
+- Ensure tokenized credit card payments include a billing address (fallback to `customer.address` when available)
+- Update test fixtures to use a valid CPF for sandbox validations
+
 ## 1.0.0 - 2025-12-13
 
 ### Initial Release

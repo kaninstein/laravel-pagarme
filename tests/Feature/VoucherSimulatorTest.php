@@ -71,7 +71,7 @@ class VoucherSimulatorTest extends TestCase
         $customer = CustomerDTO::individual(
             name: 'Cliente Voucher Teste',
             email: 'voucher.' . time() . rand(100, 999) . '@example.com',
-            cpf: '12345678900',
+            cpf: '11144477735',
             phone: PhonesDTO::brazilian(
                 mobilePhone: PhoneDTO::brazilian('11', '987654321')
             ),
@@ -243,7 +243,7 @@ class VoucherSimulatorTest extends TestCase
         $customer = CustomerDTO::individual(
             name: 'Cliente Voucher Desc',
             email: 'voucherdesc.' . time() . '@example.com',
-            cpf: '12345678900',
+            cpf: '11144477735',
             phone: PhonesDTO::brazilian(
                 mobilePhone: PhoneDTO::brazilian('11', '987654321')
             )

@@ -42,7 +42,7 @@ class CustomerServiceTest extends TestCase
         $customer = CustomerDTO::individual(
             name: 'João da Silva Teste',
             email: 'joao.teste.' . time() . '@example.com',
-            cpf: '12345678900',
+            cpf: '11144477735',
             phone: PhonesDTO::brazilian(
                 mobilePhone: PhoneDTO::brazilian('11', '987654321'),
                 homePhone: PhoneDTO::brazilian('11', '12345678')
