@@ -42,13 +42,34 @@ class WebhookValidator
     }
 
     /**
-     * Validate webhook signature
+     * Validate webhook signature or request.
+     *
+     * Back-compat note:
+     * - Older code may incorrectly call `$validator->validate($request)`.
+     * - This method now accepts either a raw payload+signature OR a Laravel Request.
+     *
+     * @param \Illuminate\Http\Request|string $payloadOrRequest Raw webhook payload (JSON string) OR Request
+     * @param string|null $signature Signature from webhook header (when using raw payload)
+     * @return bool True if signature is valid
+     */
+    public function validate(\Illuminate\Http\Request|string $payloadOrRequest, ?string $signature = null): bool
+    {
+        if ($payloadOrRequest instanceof \Illuminate\Http\Request) {
+            $result = $this->validateWebhook($payloadOrRequest);
+
+            return (bool) ($result['valid'] ?? false);
+        }
+
+        return $this->validateSignature($payloadOrRequest, $signature ?? '');
+    }
+
+    /**
+     * Validate webhook signature (HMAC)
      *
      * @param string $payload Raw webhook payload (JSON string)
      * @param string $signature Signature from webhook header
-     * @return bool True if signature is valid
      */
-    public function validate(string $payload, string $signature): bool
+    public function validateSignature(string $payload, string $signature): bool
     {
         if (empty($this->secret)) {
             throw new \RuntimeException('Webhook secret key is not configured');
@@ -74,7 +95,7 @@ class WebhookValidator
         $signature = $this->extractSignature($request);
         $payload = $request->getContent();
 
-        return $this->validate($payload, $signature);
+        return $this->validateSignature($payload, $signature);
     }
 
     /**

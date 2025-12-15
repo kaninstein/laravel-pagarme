@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-pagarme` will be documented in this file.
 
+## 1.0.2 - 2025-12-15
+
+### Fixes
+- Make `WebhookValidator::validate()` accept either a Laravel Request or `(payload, signature)` to avoid runtime errors in webhook handlers
+
 ## 1.0.1 - 2025-12-14
 
 ### Fixes
