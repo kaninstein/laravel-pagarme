@@ -9,6 +9,7 @@ class PagarmeException extends Exception
 {
     protected ?Response $response = null;
     protected array $errors = [];
+    protected ?string $requestId = null;
 
     public function __construct(
         string $message = '',
@@ -49,6 +50,11 @@ class PagarmeException extends Exception
         if (isset($body['errors']) && is_array($body['errors'])) {
             $this->errors = $body['errors'];
         }
+
+        $this->requestId = $this->response->header('x-request-id')
+            ?? $this->response->header('X-Request-Id')
+            ?? $this->response->header('request-id')
+            ?? $this->response->header('Request-Id');
     }
 
     /**
@@ -65,6 +71,11 @@ class PagarmeException extends Exception
     public function getErrors(): array
     {
         return $this->errors;
+    }
+
+    public function getRequestId(): ?string
+    {
+        return $this->requestId;
     }
 
     /**
